@@ -7,8 +7,8 @@ from elevenlabs.client import ElevenLabs
 # -----------------------------------------------------------------------------
 # Configuration: Replace with your own keys and settings
 # -----------------------------------------------------------------------------
-openai_api_key = "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"
-elevenlabs_api_key = "sk_3af5091a00867aed45d3d6e7804794e988e35dc19dcfd352"
+openai_api_key = "YOUR_OPENAI_API"
+elevenlabs_api_key = "YOUR_EVEVENLABS_API"
 tts_voice_id = "JBFqnCBsd6RMkjVDRZzb"       # Replace with your ElevenLabs voice ID
 tts_model_id = "eleven_multilingual_v2" 
 
