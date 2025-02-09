@@ -1,4 +1,5 @@
 import io
+import requests
 import streamlit as st
 from openai import OpenAI
 from elevenlabs.client import ElevenLabs
@@ -8,6 +9,7 @@ from elevenlabs.client import ElevenLabs
 # -----------------------------------------------------------------------------
 openai_api_key = "YOUR_OPENAI_API"
 elevenlabs_api_key = "YOUR_EVEVENLABS_API"
+vadoo_api_key = "YOUR_VADOO_API"
 tts_voice_id = "JBFqnCBsd6RMkjVDRZzb"       # Replace with your ElevenLabs voice ID
 tts_model_id = "eleven_multilingual_v2" 
 
@@ -18,11 +20,12 @@ tts_client = ElevenLabs(api_key=elevenlabs_api_key)
 # -----------------------------------------------------------------------------
 # Streamlit App Title and Description
 # -----------------------------------------------------------------------------
-st.title("💬 Elevator Pitch Chatbot with Voice")
+st.title("💬 Elevator Pitch Chatbot with Pitch Video and Human-like Speech!")
 st.write(
     """
-    Welcome to this wonderful tool! Simply type your product idea into the chat box,
-    and our agent will generate an engaging, concise elevator pitch for you – then convert it to speech!
+    Welcome to Pitch Like a Pro! Simply type your product idea into the chat box,
+    and our agent will generate an engaging, concise elevator pitch for you – 
+    then convert it to PITCH VIDEO with human-like SPEECH!
     """
 )
 
@@ -79,14 +82,60 @@ if user_input:
             if isinstance(chunk, bytes):
                 audio_bytes += chunk
 
-        # Optional: Save the audio file for debugging
-        with open("debug_output.mp3", "wb") as f:
+        # Save the audio file for the video generation
+        audio_file_path = "output.mp3"
+        with open(audio_file_path, "wb") as f:
             f.write(audio_bytes)
 
         # Check if audio is valid
         if audio_bytes:
             # Use BytesIO to pass audio bytes
             st.audio(io.BytesIO(audio_bytes), format="audio/mp3")
+
+            # Generate Video Using Vadoo API
+            try:
+                vadoo_url = "https://viralapi.vadoo.tv/api/generate_video"
+                headers = {
+                    "X-API-KEY": vadoo_api_key
+                }
+                data = {
+                    "topic": "Custom",
+                    "script": user_input, 
+                    "voice": "Charlie voice",
+                    "theme": "Hormozi_1",
+                    "style": "None",
+                    "language": "English",
+                    "duration": "30-60",
+                    "aspect_ratio": "9:16",
+                    "use_ai": "0",
+                    "url": "https://webhook.site/d3e18fde-60b2-4f7e-9ef3-c19317bab145"
+                }
+                files = {"audio": open(audio_file_path, "rb")}
+
+                response = requests.post(vadoo_url, headers=headers, data=data, files=files)
+
+                if response.status_code == 200:
+                    st.success("Your request has been submitted successfully!")
+                    st.write(
+                       
+                        """
+                        The video generation process will take approximately **5 minutes**.  
+                        **Step 1**: Click the link below, then click "View in Webhook.site".  
+                        **Step 2**: Find your ticket based on the submission time (usually the first one at the top).  
+                        **Step 3**: Once the POST request appears, find the URL in the response and open it to enjoy your video!  
+                        """
+                    )
+                    st.markdown(
+                        "[Go to the Webhook Page to View Your Video](https://webhook.site/d3e18fde-60b2-4f7e-9ef3-c19317bab145)",
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.error(f"Failed to generate video. Status Code: {response.status_code}")
+                    st.error(f"Response: {response.text}")
+
+            except Exception as e:
+                st.error(f"Error generating video: {str(e)}")
+
         else:
             st.error("Failed to generate audio. Please try again.")
 
