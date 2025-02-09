@@ -51,10 +51,8 @@ if user_input:
 
     # Generate the Elevator Pitch Text using OpenAI
     template = (
-        "You are a creative and persuasive copywriter and the audience are experts in Computer Science. Now you have the markdown format introduction of your project." 
-        "Generate an elevator pitch under 50 seconds for the following product idea: {product_idea}. "
-        "The pitch should be engaging, concise, professonal, and the contents should include: inspiration of this project, functions and competitive edges, crucial skills invloved, conclusion and calling on actions."
-        "Attention: Avoid incomplete sentences."
+        "You are a creative and persuasive copywriter. Generate an elevator pitch under 60 seconds for the following product idea: {product_idea}. "
+        "The pitch should be engaging, concise, and highlight the key value proposition of the product."
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -66,6 +64,10 @@ if user_input:
 
     st.session_state.messages.append({"role": "assistant", "content": pitch})
     st.chat_message("assistant").write(pitch)
+
+     # Save the pitch to a file so that the blog page can display it
+    with open("blog_content.txt", "w") as f:
+        f.write(pitch)
 
     # Convert the Pitch Text to Audio Using ElevenLabs TTS API
     try:
@@ -108,7 +110,7 @@ if user_input:
                     "duration": "30-60",
                     "aspect_ratio": "9:16",
                     "use_ai": "0",
-                    "url": "https://webhook.site/d3e18fde-60b2-4f7e-9ef3-c19317bab145"
+                    "url": "https://silver-space-succotash-75vvgxprrr6299g-8501.app.github.dev/Confirm_Page"
                 }
                 files = {"audio": open(audio_file_path, "rb")}
 
