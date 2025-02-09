@@ -5,8 +5,10 @@ from langchain.prompts import PromptTemplate
 # -----------------------------------------------------------------------------
 # Configuration: Replace with your own API key
 # -----------------------------------------------------------------------------
-openai_api_key = "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"
-client = OpenAI(api_key=openai_api_key)
+with st.sidebar:
+    openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
+    "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
+
 
 # -----------------------------------------------------------------------------
 # App Title and Description
@@ -35,14 +37,21 @@ for msg in st.session_state.messages:
 user_input = st.chat_input("Type your product idea here:")
 
 if user_input:
+    if not openai_api_key:
+        st.info("🚨 Please enter your OpenAI API key in the sidebar to continue.")
+        st.stop()
+    client = OpenAI(api_key=openai_api_key)
+
     # Append and display the user’s message
     st.session_state.messages.append({"role": "user", "content": user_input})
     st.chat_message("user").write(user_input)
 
     # Define the elevator pitch prompt template
     template = (
-        "You are a creative and persuasive copywriter. Generate an elevator pitch under 30 seconds for the following product idea: {product_idea}. "
-        "The pitch should be engaging, concise, and highlight the key value proposition of the product."
+        "You are a creative and persuasive copywriter and the audience are experts and participates of Hackathon. Now you have the markdown format introduction of your project." 
+        "Generate an elevator pitch under 50 seconds for the following product idea: {product_idea}. "
+        "The pitch should be engaging, concise, professonal, and the contents should include: inspiration of this project, functions and competitive edges, crucial skills invloved, conclusion and calling on actions."
+        "Attention: Do not occur words such as 'Introducing' and just output what can be read in the video."
     )
     pitch_template = PromptTemplate(input_variables=["product_idea"], template=template)
     formatted_prompt = pitch_template.format(product_idea=user_input)
