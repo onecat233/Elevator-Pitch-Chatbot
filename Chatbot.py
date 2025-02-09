@@ -21,7 +21,7 @@ tts_client = ElevenLabs(api_key=elevenlabs_api_key)
 st.title("💬 Elevator Pitch Chatbot with Voice")
 st.write(
     """
-    Welcome to Pitch Like a Pro! Simply type your product idea into the chat box,
+    Welcome to this wonderful tool! Simply type your product idea into the chat box,
     and our agent will generate an engaging, concise elevator pitch for you – then convert it to speech!
     """
 )
@@ -48,10 +48,10 @@ if user_input:
 
     # Generate the Elevator Pitch Text using OpenAI
     template = (
-        "You are a creative and persuasive copywriter and the audience are experts and participates of Hackathon. Now you have the markdown format introduction of your project." 
+        "You are a creative and persuasive copywriter and the audience are experts in Computer Science. Now you have the markdown format introduction of your project." 
         "Generate an elevator pitch under 50 seconds for the following product idea: {product_idea}. "
         "The pitch should be engaging, concise, professonal, and the contents should include: inspiration of this project, functions and competitive edges, crucial skills invloved, conclusion and calling on actions."
-        "Attention: Do not occur words such as 'Introducing' and just output what can be read in the video."
+        "Attention: Avoid incomplete sentences."
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
